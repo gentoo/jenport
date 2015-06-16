@@ -1,3 +1,5 @@
+package org.gentoo.jenport
+
 import java.io.File
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils
 import org.eclipse.aether.{DefaultRepositorySystemSession, RepositorySystem, RepositorySystemSession}
@@ -10,8 +12,8 @@ import org.eclipse.aether.transport.file.FileTransporterFactory
 import org.eclipse.aether.transport.http.HttpTransporterFactory
 import org.eclipse.aether.util.repository.SimpleArtifactDescriptorPolicy
 
-object ARepositorySystem {
-  def apply: RepositorySystem = {
+object RepositorySystemFactory {
+  def create: RepositorySystem = {
     val locator: DefaultServiceLocator = MavenRepositorySystemUtils.newServiceLocator();
     locator.setErrorHandler(new DefaultServiceLocator.ErrorHandler {
       override def serviceCreationFailed(ty: Class[_], impl: Class[_], ex: Throwable): Unit = {
@@ -25,8 +27,8 @@ object ARepositorySystem {
   }
 }
 
-object ADefaultRepositorySystemSession {
-  def apply(repoSys: RepositorySystem, localRepoDir: File = new File(s"${sys.props("user.home")}/.m2/repository")):
+object DefaultRepositorySystemSessionFactory {
+  def create(repoSys: RepositorySystem, localRepoDir: File = new File(s"${sys.props("user.home")}/.m2/repository")):
       DefaultRepositorySystemSession = {
     val session: DefaultRepositorySystemSession = MavenRepositorySystemUtils.newSession()
     val localRepo = new LocalRepository(localRepoDir)

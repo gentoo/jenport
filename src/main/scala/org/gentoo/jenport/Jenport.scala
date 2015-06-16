@@ -1,10 +1,16 @@
+package org.gentoo.jenport
+
+import org.eclipse.aether.{DefaultRepositorySystemSession, RepositorySystem}
+
 abstract class CommandOpt
 case class Invalid() extends CommandOpt
+case class InvalidCommand(s: String) extends CommandOpt
+case class InvalidOpt(s: String) extends CommandOpt
 case class GlobalFlags(opts: Map[Symbol, Any]) extends CommandOpt
 case class CurrentVersionCommand(as: List[String]) extends CommandOpt
 
 object Jenport {
-  def main(args: Array[String]) = {
+  def main(args: Array[String]): Unit = {
     val usage = "Usage: jenport COMMAND [FLAGS]\n" +
     "   or: jenport [GLOBAL FLAGS]\n\n" +
     "Global flags:\n" +
@@ -19,12 +25,10 @@ object Jenport {
       as match {
         case Nil => map
         case ("-h" | "--help") :: _ => {
-          println(usage)
-          map
+          Map('help -> "")
         }
         case x :: xs => {
-          println("Unknown option " + x)
-          map
+          Map('unknown -> x)
         }
       }
     }
@@ -36,19 +40,35 @@ object Jenport {
           if (x(0) == '-') {
             GlobalFlags(nextOption(Map(), as))
           } else {
-            println("Unknown option " + x)
+            InvalidOpt(x)
           }
         }
         case Nil => {
-          println(usage)
           Invalid()
         }
       }
       if (!as.isEmpty && (as.head(0) == '-')) {
         GlobalFlags(nextOption(Map(), as))
       } else {
-        println(usage)
         Invalid()
+      }
+    }
+
+    commandOrOpt(arglist) match {
+      case Invalid() => println(usage)
+      case InvalidCommand(x) => println("Unknown command: " + x + "\n" + usage)
+      case InvalidOpt(x) => println("Unknown option: " + x + "\n" + usage)
+      case GlobalFlags(m) => {
+        m map { case (k, v) =>
+          k match {
+            case 'help => println(usage)
+            case _ => println("Unknown option: " + v + "\n" + usage)
+          }
+        }
+      }
+      case CurrentVersionCommand(as) => {
+        val repoSys = RepositorySystemFactory.create
+        val sess = DefaultRepositorySystemSessionFactory.create(repoSys)
       }
     }
   }
