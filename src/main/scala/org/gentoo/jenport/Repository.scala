@@ -3,14 +3,17 @@ package org.gentoo.jenport
 import java.io.File
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils
 import org.eclipse.aether.{DefaultRepositorySystemSession, RepositorySystem, RepositorySystemSession}
+import org.eclipse.aether.artifact.{Artifact, DefaultArtifact}
 import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory
 import org.eclipse.aether.impl.DefaultServiceLocator
 import org.eclipse.aether.repository.{LocalRepository, RemoteRepository}
+import org.eclipse.aether.resolution.VersionRangeRequest;
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory
 import org.eclipse.aether.spi.connector.transport.TransporterFactory
 import org.eclipse.aether.transport.file.FileTransporterFactory
 import org.eclipse.aether.transport.http.HttpTransporterFactory
 import org.eclipse.aether.util.repository.SimpleArtifactDescriptorPolicy
+import scala.collection.JavaConverters._
 
 object RepositorySystemFactory {
   def create: RepositorySystem = {
@@ -36,5 +39,21 @@ object DefaultRepositorySystemSessionFactory {
     val artDescPol = new SimpleArtifactDescriptorPolicy(false, true)
     session.setArtifactDescriptorPolicy(artDescPol)
     session
+  }
+}
+
+object RemoteRepositoryFactory {
+  def create: List[RemoteRepository] = {
+    List(new RemoteRepository.Builder( "central", "default", "http://central.maven.org/maven2/" ).build());
+  }
+}
+
+object VersionRangeRequestFactory {
+  def create(groupArtifactId: String, rs: List[RemoteRepository]): VersionRangeRequest = {
+    val rangeRequest = new VersionRangeRequest
+    val artifact = new DefaultArtifact(groupArtifactId + ":[0,)")
+    rangeRequest.setArtifact(artifact)
+    rangeRequest.setRepositories(rs.asJava)
+    rangeRequest
   }
 }

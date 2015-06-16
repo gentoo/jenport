@@ -15,7 +15,9 @@ object Jenport {
     "   or: jenport [GLOBAL FLAGS]\n\n" +
     "Global flags:\n" +
     " -h --help              Show this help text\n" +
-    " -V --version           Print version information\n"
+    " -V --version           Print version information\n\n" +
+    "Commands:\n" +
+    "  current-version       List current versions of groupId:artifactId packages"   
 
     if (args.length == 0) println(usage)
     val arglist = args.toList
@@ -47,11 +49,6 @@ object Jenport {
           Invalid()
         }
       }
-      if (!as.isEmpty && (as.head(0) == '-')) {
-        GlobalFlags(nextOption(Map(), as))
-      } else {
-        Invalid()
-      }
     }
 
     commandOrOpt(arglist) match {
@@ -69,6 +66,13 @@ object Jenport {
       case CurrentVersionCommand(as) => {
         val repoSys = RepositorySystemFactory.create
         val sess = DefaultRepositorySystemSessionFactory.create(repoSys)
+        val remoteRepos = RemoteRepositoryFactory.create
+        as map { a =>
+          val rangeRequest = VersionRangeRequestFactory.create(a, remoteRepos)
+          val rangeResult = repoSys.resolveVersionRange(sess, rangeRequest);
+          val currentVersion = rangeResult.getHighestVersion
+          println(a + ": " + currentVersion)
+        }
       }
     }
   }
