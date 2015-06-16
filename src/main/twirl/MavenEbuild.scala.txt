@@ -1,0 +1,7 @@
+@* -*- Ebuild -*- *@
+@(e: org.gentoo.jenport.E)
+# Copyright 1999-@e.year Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: $
+
+EAPI=@e.eapi
