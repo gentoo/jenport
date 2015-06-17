@@ -44,7 +44,7 @@ object DefaultRepositorySystemSessionFactory {
 
 object RemoteRepositoryFactory {
   def create: List[RemoteRepository] = {
-    List(new RemoteRepository.Builder( "central", "default", "http://central.maven.org/maven2/" ).build());
+    List(new RemoteRepository.Builder( "central", "default", "http://central.maven.org/maven2/" ).build())
   }
 }
 

@@ -61,7 +61,7 @@ It is just a sketch for discussion.  It is broken in multiple ways, including:
 * Uses maven
 * DEPEND missing
 * Uses hard coded specific version dependencies instead of a range
-* ${WORKDIR}"/m2/repository needs to be populated somehow
+* "${WORKDIR}"/m2/repository needs to be populated somehow
 * It uses the currently select jdk, instead of the jdk specified in DEPEND
 * Does not use any java eclass
 
@@ -127,7 +127,7 @@ the dependencies.  However since the type system in Java is not very strong,
 it may compile ok, but then fail at runtime.  If upstream provide a testsuite
 that works then we could run the testsuite.
 
-### ${WORKDIR}"/m2/repository needs to be populated somehow
+### "${WORKDIR}"/m2/repository needs to be populated somehow
 
 Some ideas:
 
@@ -160,3 +160,5 @@ As this is also to be done.
 
 Please add your name (in 2 places, it may require some reformatting to
 break the lines) to LICENSE.
+
+Please join us in channel `#gentoo-java` on IRC freenode.
