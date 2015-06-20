@@ -1,6 +1,7 @@
 package org.gentoo.jenport
 
 import org.eclipse.aether.{DefaultRepositorySystemSession, RepositorySystem}
+import scala.collection.JavaConverters._
 
 abstract class CommandOpt
 case class Invalid() extends CommandOpt
@@ -8,6 +9,7 @@ case class InvalidCommand(s: String) extends CommandOpt
 case class InvalidOpt(s: String) extends CommandOpt
 case class GlobalFlags(opts: Map[Symbol, Any]) extends CommandOpt
 case class CurrentVersionCommand(as: List[String]) extends CommandOpt
+case class MergeCommand(as: List[String]) extends CommandOpt
 
 object Jenport {
   def main(args: Array[String]): Unit = {
@@ -38,6 +40,7 @@ object Jenport {
     def commandOrOpt(as: List[String]): CommandOpt = {
       as match {
         case "current-version" :: tail => CurrentVersionCommand(tail)
+        case "merge" :: tail => MergeCommand(tail)
         case x :: xs => {
           if (x(0) == '-') {
             GlobalFlags(nextOption(Map(), as))
@@ -68,10 +71,26 @@ object Jenport {
         val sess = DefaultRepositorySystemSessionFactory.create(repoSys)
         val remoteRepos = RemoteRepositoryFactory.create
         as map { a =>
-          val rangeRequest = VersionRangeRequestFactory.create(a, remoteRepos)
+          val rangeRequest = VersionRangeRequestFactory.create(remoteRepos, a)
           val rangeResult = repoSys.resolveVersionRange(sess, rangeRequest);
           val currentVersion = rangeResult.getHighestVersion
           println(a + ": " + currentVersion)
+        }
+      }
+      case MergeCommand(as) => {
+        val repoSys = RepositorySystemFactory.create
+        val sess = DefaultRepositorySystemSessionFactory.create(repoSys)
+        val remoteRepos = RemoteRepositoryFactory.create
+        as map { a =>
+          val rangeRequest = VersionRangeRequestFactory.create(remoteRepos, a)
+          val rangeResult = repoSys.resolveVersionRange(sess, rangeRequest);
+          val currentVersion = rangeResult.getHighestVersion
+          println(a + ": " + currentVersion)
+          val descRequest = ArtifactDescriptorRequestFactory.create(remoteRepos, a, currentVersion.toString)
+          val descResult = repoSys.readArtifactDescriptor(sess, descRequest);
+          descResult.getDependencies.asScala map { d =>
+            println("  " + d)
+          }
         }
       }
     }

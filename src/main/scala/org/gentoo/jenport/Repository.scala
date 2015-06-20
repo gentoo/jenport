@@ -7,7 +7,7 @@ import org.eclipse.aether.artifact.{Artifact, DefaultArtifact}
 import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory
 import org.eclipse.aether.impl.DefaultServiceLocator
 import org.eclipse.aether.repository.{LocalRepository, RemoteRepository}
-import org.eclipse.aether.resolution.VersionRangeRequest;
+import org.eclipse.aether.resolution.{ArtifactDescriptorRequest, ArtifactDescriptorResult, VersionRangeRequest}
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory
 import org.eclipse.aether.spi.connector.transport.TransporterFactory
 import org.eclipse.aether.transport.file.FileTransporterFactory
@@ -44,16 +44,26 @@ object DefaultRepositorySystemSessionFactory {
 
 object RemoteRepositoryFactory {
   def create: List[RemoteRepository] = {
-    List(new RemoteRepository.Builder( "central", "default", "http://central.maven.org/maven2/" ).build())
+    List(new RemoteRepository.Builder("central", "default", "http://central.maven.org/maven2/").build())
   }
 }
 
 object VersionRangeRequestFactory {
-  def create(groupArtifactId: String, rs: List[RemoteRepository]): VersionRangeRequest = {
+  def create(rs: List[RemoteRepository], groupArtifactId: String, version: String = "[0,)"): VersionRangeRequest = {
     val rangeRequest = new VersionRangeRequest
-    val artifact = new DefaultArtifact(groupArtifactId + ":[0,)")
+    val artifact = new DefaultArtifact(groupArtifactId + ":" + version)
     rangeRequest.setArtifact(artifact)
     rangeRequest.setRepositories(rs.asJava)
     rangeRequest
+  }
+}
+
+object ArtifactDescriptorRequestFactory {
+  def create(rs: List[RemoteRepository], groupArtifactId: String, version: String): ArtifactDescriptorRequest = {
+    val descRequest = new ArtifactDescriptorRequest
+    val artifact = new DefaultArtifact(groupArtifactId + ":" + version)
+    descRequest.setArtifact(artifact)
+    descRequest.setRepositories(rs.asJava)
+    descRequest
   }
 }
