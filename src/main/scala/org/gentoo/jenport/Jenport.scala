@@ -91,6 +91,17 @@ object Jenport {
           descResult.getDependencies.asScala map { d =>
             println("  " + d)
           }
+          val g = G(2015, 5)
+          val e = E("Aether is a library for working with artifact repositories.",
+            "http://www.eclipse.org/aether/",
+            "http://repo1.maven.org/maven2/org/eclipse/aether/aether/${MY_PV}/${MY_P}-source-release.zip",
+            "EPL-1.0",
+            "org/eclipse/aether",
+            "1.0",
+            "1.6"
+          )
+          val ds = List()
+          val ebuild = txt.MavenEbuild(g, e, ds)
         }
       }
     }

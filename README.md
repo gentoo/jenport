@@ -41,12 +41,15 @@ Twirl templates from the Play framework are used to generate the ebuild and meta
 
 https://github.com/gentoo/jenport/blob/master/src/main/twirl/MavenEbuild.scala.txt
 
-Line 2 references a Scala class:
+Line 2 references Scala classes:
 
+https://github.com/gentoo/jenport/blob/master/src/main/scala/org/gentoo/jenport/G.scala
 https://github.com/gentoo/jenport/blob/master/src/main/scala/org/gentoo/jenport/E.scala
+https://github.com/gentoo/jenport/blob/master/src/main/scala/org/gentoo/jenport/D.scala
 
-Which is currently not set anywhere, and of course the ebuild Twirl template
-is mostly blank.
+Which are filled in (currently with hard coded junk) and passed to the twirl
+template txt.MavenBuild(g, e, ds) in Jenport.scala.  The ebuild Twirl template
+is mostly blank.  The eclass has not yet been written.
 
 https://www.playframework.com/documentation/2.3.x/ScalaTemplates
 

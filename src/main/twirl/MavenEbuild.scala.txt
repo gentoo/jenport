@@ -1,7 +1,32 @@
 @* -*- Ebuild -*- *@
-@(e: org.gentoo.jenport.E)
-# Copyright 1999-@e.year Gentoo Foundation
+@(g: org.gentoo.jenport.G, e: org.gentoo.jenport.E, ds: Seq[org.gentoo.jenport.D])
+# Copyright 1999-@g.year Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI=@e.eapi
+EAPI=@g.eapi
+
+inherit ?
+
+declare -a MAVEN_DEPS=(	# GroupId				ArtifactId		Version
+@ds.map { d =>
+						# d.groupId				d.artifactId	d.mversion
+	d.atom
+}
+)
+
+MAVEN_GROUPID="e.mGroupId"
+
+DESCRIPTION="e.description"
+HOMEPAGE="e.homepage"
+SRC_URI="e.srcUri"
+
+LICENSE="e.license"
+SLOT="e.slot"
+KEYWORDS="~amd64 ~x86"
+IUSE=""
+
+RDEPEND=">=virtual/jre-e.javaVer"
+DEPEND="${MAVEN_DEPS[@@]}
+	>=virtual/jdk-e.javaVer
+	dev-java/maven-bin:3.2"
