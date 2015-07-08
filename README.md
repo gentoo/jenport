@@ -51,7 +51,7 @@ Which are filled in (currently with hard coded junk) and passed to the twirl
 template txt.MavenBuild(g, e, ds) in Jenport.scala.  The ebuild Twirl template
 is mostly blank.  The eclass has not yet been written.
 
-https://www.playframework.com/documentation/2.3.x/ScalaTemplates
+https://www.playframework.com/documentation/2.4.x/ScalaTemplates
 
 ## Maven ebuild sketch
 
@@ -125,10 +125,18 @@ for the different ABIs.
 
 * It may be difficult or impossible to find a consistent set of packages.
 
+http://avandeursen.com/2014/10/09/semantic-versioning-in-maven-central-breaking-changes/
+
 An idea is that jenport or a Python script could patch the pom.xml to loosen
 the dependencies.  However since the type system in Java is not very strong,
 it may compile ok, but then fail at runtime.  If upstream provide a testsuite
 that works then we could run the testsuite.
+
+We could use a tool such as japicmp to compare 2 versions of a jar to see if
+they are ABI compatible or not.  This could be used to determine which slot to
+place a new ebuild in.
+
+https://github.com/siom79/japicmp
 
 ### "${WORKDIR}"/m2/repository needs to be populated somehow
 

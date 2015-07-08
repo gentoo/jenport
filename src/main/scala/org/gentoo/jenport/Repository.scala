@@ -67,3 +67,12 @@ object ArtifactDescriptorRequestFactory {
     descRequest
   }
 }
+
+object CollectRequestFactory {
+  def create(rs: List[RemoteRepository], groupArtifactId: String, version: String): CollectRequest = {
+    val collectRequest = new CollectRequest()
+    val artifact = new DefaultArtifact(groupArtifactId + ":" + version)
+    collectRequest.setRoot(new Dependency(artifact, ""))
+    collectRequest.setRepositories(rs.asJava)
+    collectRequest
+}

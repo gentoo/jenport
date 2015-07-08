@@ -83,14 +83,12 @@ object Jenport {
         val remoteRepos = RemoteRepositoryFactory.create
         as map { a =>
           val rangeRequest = VersionRangeRequestFactory.create(remoteRepos, a)
-          val rangeResult = repoSys.resolveVersionRange(sess, rangeRequest);
+          val rangeResult = repoSys.resolveVersionRange(sess, rangeRequest)
           val currentVersion = rangeResult.getHighestVersion
           println(a + ": " + currentVersion)
-          val descRequest = ArtifactDescriptorRequestFactory.create(remoteRepos, a, currentVersion.toString)
-          val descResult = repoSys.readArtifactDescriptor(sess, descRequest);
-          descResult.getDependencies.asScala map { d =>
-            println("  " + d)
-          }
+          val collectRequest = CollectRequestFactory.create(remoteRepos, a, currentVersion.toString)
+          val collectResult = repoSys.collectDependencies(sess, collectRequest)
+
           val g = G(2015, 5)
           val e = E("Aether is a library for working with artifact repositories.",
             "http://www.eclipse.org/aether/",
